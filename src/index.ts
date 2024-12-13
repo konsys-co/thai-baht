@@ -1,0 +1,1 @@
+export { default as ThaiBahtConverter } from './thai-baht'
