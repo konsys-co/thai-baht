@@ -1,6 +1,6 @@
-const makeRawNumberStr = (anyNumber: string | number) => {
+const makeRawNumberStr = (strNumber: string) => {
   let decimal = false
-  let rawNumberStr = anyNumber.toString().replace(/ |,|บาท|฿/gi, '')
+  let rawNumberStr = strNumber.replace(/ |,|บาท|฿/gi, '')
   for (let i = 0; i < rawNumberStr.length; i++) {
     if (rawNumberStr[i] === '.') {
       decimal = true
@@ -40,22 +40,26 @@ const intergerToText = (interger: number) => {
   return bahtText
 }
 
-const arabicNumberToText = (arabicNumber: string | number) => {
-  const rawNumberStr = makeRawNumberStr(arabicNumber)
-  let bahtText = ''
-  if (isNaN(Number(rawNumberStr))) {
+const arabicNumberToText = (arabicNumber: string | number | String) => {
+  const arabicStr = arabicNumber.toString().trim()
+  if (arabicStr === '') return ''
+  const rawNumberStr = makeRawNumberStr(arabicNumber.toString())
+  const isNegative = rawNumberStr.startsWith('-')
+  const absRawNumberStr = rawNumberStr.replace('-', '')
+  let bahtText = isNegative ? 'ลบ' : ''
+  if ( isNaN(Number(absRawNumberStr))) {
     return 'ข้อมูลนำเข้าไม่ถูกต้อง'
   } else {
-    if ((Number(rawNumberStr) - 0) > 999999999999.9999) {
+    if ((Number(absRawNumberStr) - 0) > 999999999999.9999) {
       return 'ข้อมูลนำเข้าเกินขอบเขตที่ตั้งไว้'
     } else {
-      const millionPart = parseInt((Number(rawNumberStr) / 1000000).toString())
+      const millionPart = parseInt((Number(absRawNumberStr) / 1000000).toString())
       if (millionPart > 0) {
         bahtText += intergerToText(millionPart)
         bahtText += 'ล้าน'
       }
-      const wholeNumberPart = Number(rawNumberStr.split('.')[0]) % 1000000
-      const decimalPart = rawNumberStr.split('.')[1].substring(0, 2)
+      const wholeNumberPart = Number(absRawNumberStr.split('.')[0]) % 1000000
+      const decimalPart = absRawNumberStr.split('.')[1].substring(0, 2)
       bahtText += intergerToText(Number(wholeNumberPart))
       bahtText += 'บาท'
       if (Number(decimalPart) === 0) {
