@@ -1,8 +1,10 @@
 import { ThaiBahtConverter } from "../src"
 
 test('Convert to Thai number', () => {
-  const thaiNumber = ThaiBahtConverter.arabicNumberToThaiNumber(1234567890)
-  expect(thaiNumber).toBe('๑๒๓๔๕๖๗๘๙๐')
+  const input = 1234567890
+  const expected = '๑๒๓๔๕๖๗๘๙๐'
+  expect(ThaiBahtConverter.arabicNumberToThaiNumber(input)).toBe(expected)
+  expect(ThaiBahtConverter.arabicNumberToThaiNumber(String(input))).toBe(expected)
 })
 
 test('Convert to Arabic number', () => {
@@ -11,8 +13,10 @@ test('Convert to Arabic number', () => {
 })
 
 test('Convert Arabic number to Thai text', () => {
-  const thaiText = ThaiBahtConverter.arabicNumberToText(1234567890)
-  expect(thaiText).toBe('หนึ่งพันสองร้อยสามสิบสี่ล้านห้าแสนหกหมื่นเจ็ดพันแปดร้อยเก้าสิบบาทถ้วน')
+  const input = 1234567890
+  const expected = 'หนึ่งพันสองร้อยสามสิบสี่ล้านห้าแสนหกหมื่นเจ็ดพันแปดร้อยเก้าสิบบาทถ้วน'
+  expect(ThaiBahtConverter.arabicNumberToText(input)).toBe(expected)
+  expect(ThaiBahtConverter.arabicNumberToText(String(input))).toBe(expected)
 })
 
 test('Convert Thai number to Thai text', () => {
@@ -33,4 +37,27 @@ test('Convert number one at unit digit only', () => {
 test('Convert number one at unit digit with other digit', () => {
   const thaiText = ThaiBahtConverter.arabicNumberToText(1001)
   expect(thaiText).toBe('หนึ่งพันเอ็ดบาทถ้วน')
+})
+
+test('Convert negative number', () => {
+  const thaiText = ThaiBahtConverter.arabicNumberToText(-1234)
+  expect(thaiText).toBe('ลบหนึ่งพันสองร้อยสามสิบสี่บาทถ้วน')
+})
+
+test('Convert empty input', () => {
+  const expected = ''
+  expect(ThaiBahtConverter.arabicNumberToText('')).toBe(expected)
+  expect(ThaiBahtConverter.arabicNumberToText('')).toBe(expected)
+})
+
+test('Invalid input', () => {
+  const expected = 'ข้อมูลนำเข้าไม่ถูกต้อง'
+  expect(ThaiBahtConverter.arabicNumberToText('abc')).toBe(expected)
+  expect(ThaiBahtConverter.arabicNumberToText('๑๒ก๓๔')).toBe(expected)
+})
+
+test('Input exceed limit', () => {
+  const expected = 'ข้อมูลนำเข้าเกินขอบเขตที่ตั้งไว้'
+  expect(ThaiBahtConverter.arabicNumberToText(1000000000000)).toBe(expected)
+  expect(ThaiBahtConverter.arabicNumberToText('1000000000000')).toBe(expected)
 })
